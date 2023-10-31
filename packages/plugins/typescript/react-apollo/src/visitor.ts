@@ -401,6 +401,7 @@ export class ReactApolloVisitor extends ClientSideBaseVisitor<
     ];
 
     if (operationType === 'Query') {
+      // LazyQuery Hook
       const lazyOperationName: string =
         this.convertName(nodeName, {
           suffix: pascalCase('LazyQuery'),
@@ -419,6 +420,7 @@ export class ReactApolloVisitor extends ClientSideBaseVisitor<
         `export type ${lazyOperationName}HookResult = ReturnType<typeof use${lazyOperationName}>;`,
       );
 
+      // SuspenseQuery Hook
       const suspenseOperationName: string =
         this.convertName(nodeName, {
           suffix: pascalCase('SuspenseQuery'),
@@ -436,6 +438,43 @@ export class ReactApolloVisitor extends ClientSideBaseVisitor<
       );
       hookResults.push(
         `export type ${suspenseOperationName}HookResult = ReturnType<typeof use${suspenseOperationName}>;`,
+      );
+
+      // BackgroundQuery Hook
+      const backgroundOperationName: string =
+        this.convertName(nodeName, {
+          suffix: pascalCase('BackgroundQuery'),
+          useTypesPrefix: false,
+        }) + this.config.hooksSuffix;
+
+      hookFns.push(
+        `export function use${backgroundOperationName}(baseOptions?: ${this.getApolloReactHooksIdentifier()}.BackgroundQueryHookOptions<${operationResultType}, ${operationVariablesTypes}>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ${this.getApolloReactHooksIdentifier()}.useBackgroundQuery<${operationResultType}, ${operationVariablesTypes}>(${this.getDocumentNodeVariable(
+          node,
+          documentVariableName,
+        )}, options);
+        }`,
+      );
+      hookResults.push(
+        `export type ${backgroundOperationName}HookResult = ReturnType<typeof use${backgroundOperationName}>;`,
+      );
+
+      // ReadQuery Hook
+      const readOperationName: string =
+        this.convertName(nodeName, {
+          suffix: pascalCase('ReadQuery'),
+          useTypesPrefix: false,
+        }) + this.config.hooksSuffix;
+
+      hookFns.push(
+        `export function use${readOperationName}(backgroundQueryRef: ${backgroundOperationName}HookResult[0])) {
+          return ${this.getApolloReactHooksIdentifier()}.useReadQuery<${operationResultType}>(backgroundQueryRef);
+        }`,
+      );
+
+      hookResults.push(
+        `export type ${readOperationName}HookResult = ReturnType<typeof use${readOperationName}>;`,
       );
     }
 
