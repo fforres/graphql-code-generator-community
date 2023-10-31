@@ -511,15 +511,19 @@ export function useCommentBackgroundQuery(
   baseOptions?: Apollo.BackgroundQueryHookOptions<CommentQueryMyOperation, CommentQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<CommentQueryMyOperation, CommentQueryVariables>(
+  return Apollo.useBackgroundQuery<CommentQueryMyOperation, CommentQueryVariables>(
     CommentDocument,
     options,
   );
+}
+export function useCommentReadQuery(backgroundQueryRef: CommentBackgroundQueryHookResult[0]) {
+  return Apollo.useReadQuery<CommentQueryMyOperation>(backgroundQueryRef);
 }
 export type CommentQueryHookResult = ReturnType<typeof useCommentQuery>;
 export type CommentLazyQueryHookResult = ReturnType<typeof useCommentLazyQuery>;
 export type CommentSuspenseQueryHookResult = ReturnType<typeof useCommentSuspenseQuery>;
 export type CommentBackgroundQueryHookResult = ReturnType<typeof useCommentBackgroundQuery>;
+export type CommentReadQueryHookResult = ReturnType<typeof useCommentReadQuery>;
 export type CommentQueryResult = Apollo.QueryResult<CommentQueryMyOperation, CommentQueryVariables>;
 export const CurrentUserForProfileDocument = gql`
   query CurrentUserForProfile {
@@ -593,6 +597,11 @@ export function useCurrentUserForProfileBackgroundQuery(
     CurrentUserForProfileQueryVariables
   >(CurrentUserForProfileDocument, options);
 }
+export function useCurrentUserForProfileReadQuery(
+  backgroundQueryRef: CurrentUserForProfileBackgroundQueryHookResult[0],
+) {
+  return Apollo.useReadQuery<CurrentUserForProfileQueryMyOperation>(backgroundQueryRef);
+}
 export type CurrentUserForProfileQueryHookResult = ReturnType<typeof useCurrentUserForProfileQuery>;
 export type CurrentUserForProfileLazyQueryHookResult = ReturnType<
   typeof useCurrentUserForProfileLazyQuery
@@ -602,6 +611,9 @@ export type CurrentUserForProfileSuspenseQueryHookResult = ReturnType<
 >;
 export type CurrentUserForProfileBackgroundQueryHookResult = ReturnType<
   typeof useCurrentUserForProfileBackgroundQuery
+>;
+export type CurrentUserForProfileReadQueryHookResult = ReturnType<
+  typeof useCurrentUserForProfileReadQuery
 >;
 export type CurrentUserForProfileQueryResult = Apollo.QueryResult<
   CurrentUserForProfileQueryMyOperation,
@@ -661,10 +673,14 @@ export function useFeedBackgroundQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useBackgroundQuery<FeedQueryMyOperation, FeedQueryVariables>(FeedDocument, options);
 }
+export function useFeedReadQuery(backgroundQueryRef: FeedBackgroundQueryHookResult[0]) {
+  return Apollo.useReadQuery<FeedQueryMyOperation>(backgroundQueryRef);
+}
 export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
 export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
 export type FeedSuspenseQueryHookResult = ReturnType<typeof useFeedSuspenseQuery>;
 export type FeedBackgroundQueryHookResult = ReturnType<typeof useFeedBackgroundQuery>;
+export type FeedReadQueryHookResult = ReturnType<typeof useFeedReadQuery>;
 export type FeedQueryResult = Apollo.QueryResult<FeedQueryMyOperation, FeedQueryVariables>;
 export const SubmitRepositoryDocument = gql`
   mutation submitRepository($repoFullName: String!) {
